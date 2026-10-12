@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Riskified\Decider\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Riskified\Decider\Model\Logger\Order">
+        <arguments>
+            <argument name="name" xsi:type="string">Order</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Riskified\Decider\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Riskified\Decider\Model\Logger\Merchant">
+        <arguments>
+            <argument name="name" xsi:type="string">Merchant</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Riskified\Decider\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Backend\Block\Widget\Context">
+        <plugin name="riskified_decider_sales_order_view_toolbar_send_button"
+                type="Riskified\Decider\Plugin\Widget\Context" sortOrder="1"/>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="riskfied_send_historical_orders" xsi:type="object">Riskified\Decider\Model\Command\UploadHistoricalOrders</item>
+                <item name="release_on_hold_orders" xsi:type="object">Riskified\Decider\Model\Command\ReleaseOnHoldOrders</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="BraintreeAuthorizationHandler">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="decider_3ds" xsi:type="string">Riskified\Decider\Model\Gateway\Braintree\Response\ThreeDSecureDetailsHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="BraintreeVaultResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="decider_3ds" xsi:type="string">Riskified\Decider\Model\Gateway\Braintree\Response\ThreeDSecureDetailsHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <preference for="Riskified\Decider\Api\DecisionRepositoryInterface"
+                type="Riskified\Decider\Model\DecisionRepository"/>
+
+    <!-- Riskified Advice Plugin for Guest Checkout Validation -->
+    <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
+        <plugin name="riskified_advice_guest_payment_validation"
+                type="Riskified\AdaptiveCheckout\Plugin\GuestPaymentInformationManagementPlugin"
+                sortOrder="1"/>
+    </type>
+    <!-- Riskified Advice Plugin for Customer Checkout Validation -->
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin name="riskified_advice_customer_payment_validation"
+                type="Riskified\AdaptiveCheckout\Plugin\PaymentInformationManagementPlugin"
+                sortOrder="1"/>
+    </type>
+    <!-- Persist Adyen's cardBin into vault token details so Advice can read it server-side -->
+    <type name="Adyen\Payment\Helper\Vault">
+        <plugin name="riskified_advice_adyen_vault_bin_backfill"
+                type="Riskified\AdaptiveCheckout\Plugin\AdyenVaultBinBackfillPlugin"
+                sortOrder="10"/>
+    </type>
+    <!-- Force 3DS on Adyen /payments when Advice signals SCA is required -->
+    <type name="Adyen\Payment\Gateway\Request\CheckoutDataBuilder">
+        <plugin name="riskified_advice_adyen_force_3ds_new_card"
+                type="Riskified\AdaptiveCheckout\Plugin\Adyen\Force3DSPlugin"
+                sortOrder="10"/>
+    </type>
+    <type name="Adyen\Payment\Gateway\Request\RecurringVaultDataBuilder">
+        <plugin name="riskified_advice_adyen_force_3ds_vault"
+                type="Riskified\AdaptiveCheckout\Plugin\Adyen\Force3DSPlugin"
+                sortOrder="10"/>
+    </type>
+</config>

@@ -1,0 +1,11 @@
+{
+    "quote": {
+        "column": {
+            "riskified_advice_status": true,
+            "riskified_advice_email": true,
+            "riskified_advice_email_hash": true,
+            "riskified_advice_cart_state_hash": true,
+            "riskified_advice_gateway": true
+        }
+    }
+}

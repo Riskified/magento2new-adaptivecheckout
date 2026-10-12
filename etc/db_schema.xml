@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote" resource="default">
+        <column xsi:type="varchar"
+                name="riskified_advice_status"
+                nullable="true"
+                length="32"
+                comment="Riskified Advice Status"/>
+        <column xsi:type="varchar" name="riskified_advice_email" length="255" nullable="true" comment="Riskified Advice Validated Email"/>
+        <column xsi:type="varchar" name="riskified_advice_email_hash" length="64" nullable="true" comment="Riskified Advice Email Hash for Validation"/>
+        <column xsi:type="varchar" name="riskified_advice_cart_state_hash" length="64" nullable="true" comment="Riskified Advice Cart State Hash for Change Detection"/>
+        <column xsi:type="varchar" name="riskified_advice_gateway" length="32" nullable="true" comment="Riskified Advice Gateway the Decision Was Issued For"/>
+    </table>
+</schema>

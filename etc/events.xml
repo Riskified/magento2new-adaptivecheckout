@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="riskified_advice_prevent_order"
+                  instance="Riskified\AdaptiveCheckout\Observer\PreventOrderPlacement"/>
+    </event>
+    <event name="checkout_submit_before">
+        <observer name="riskified_advice_prevent_order_checkout"
+                  instance="Riskified\AdaptiveCheckout\Observer\PreventOrderPlacement"/>
+    </event>
+    <event name="sales_order_place_before">
+        <observer name="riskified_advice_prevent_order_before"
+                  instance="Riskified\AdaptiveCheckout\Observer\PreventOrderPlacement"/>
+    </event>
+    <!--
+    <event name="controller_action_predispatch_checkout_index_index">
+        <observer name="riskified_advice_reset_status"
+                  instance="Riskified\AdaptiveCheckout\Observer\ResetAdviceStatus"/>
+    </event>
+    -->
+    <event name="quote_save_before">
+        <observer name="riskified_advice_invalidate_on_change"
+                  instance="Riskified\AdaptiveCheckout\Observer\InvalidateAdviceOnQuoteChange"/>
+    </event>
+    <event name="payment_method_assign_data_adyen_cc">
+        <observer name="riskified_advice_capture_force_3ds_cc"
+                  instance="Riskified\AdaptiveCheckout\Observer\CaptureForce3DSFlag"/>
+    </event>
+    <event name="payment_method_assign_data_adyen_cc_vault">
+        <observer name="riskified_advice_capture_force_3ds_cc_vault"
+                  instance="Riskified\AdaptiveCheckout\Observer\CaptureForce3DSFlag"/>
+    </event>
+    <event name="payment_method_assign_data_adyen_oneclick">
+        <observer name="riskified_advice_capture_force_3ds_oneclick"
+                  instance="Riskified\AdaptiveCheckout\Observer\CaptureForce3DSFlag"/>
+    </event>
+</config>
